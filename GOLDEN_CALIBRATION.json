@@ -1,0 +1,55 @@
+{
+ "note": "Calibration of the rule engine against MCA-validated instance documents (golden-*.xml). Each entry names a Business Rules V1.2 requirement that an MCA-validated instance does not meet; the requirement stays visible but is reported as a WARNING instead of a blocking error. Only explicit workbook requirements contradicted by validated evidence are listed here; interpretation fixes are made in the engine and documented in AUDIT_REPORT.md. Since v1.2 an entry for a plain 'mandatory field' rule (since v1.5 also an 'assert' rule) may carry 'whenNilOrAbsent': the rule is a warning only for a year in which that element is absent, nil or 0, and stays blocking otherwise. Since v1.5.5 an entry with 'sharedName' names a table (hypercube) used by two ELRs, each with its own mandatory line items: the MCA validator checks both lists together for at least one member; a missing shared member is reported with the entry's severity (a warning for a table without such an entry).",
+ "entries": [
+  {
+   "rule": "ML-44",
+   "concept": "DateOfBirthOfKeyManagerialPersonnelOrDirector",
+   "severity": "WARNING",
+   "evidence": "golden-ref-a-2022-23.xml (MCA-validated, FY 2022-23): KMP rows A, B, C report every other ML-44 element but no date of birth"
+  },
+  {
+   "rule": "ML-45",
+   "concept": "TurnoverOfHighestContributingProductOrService",
+   "severity": "WARNING",
+   "evidence": "golden-ref-a-2022-23.xml (MCA-validated, FY 2022-23): principal product rows A, B report every other ML-45 element but not the turnover of the highest contributing product"
+  },
+  {
+   "rule": "SR-L1097-1",
+   "concept": "WhetherPropertyPlantAndEquipmentAreStatedAtRevaluedAmount",
+   "severity": "WARNING",
+   "whenNilOrAbsent": "PropertyPlantAndEquipment",
+   "evidence": "golden-ref-b-2024-25.xml (MCA-validated, FY 2024-25): property, plant and equipment reported as 0 for both years and no note; the revaluation flag is not reported",
+   "decision": "release owner, 2026-10-09 (v1.2): a warning only while the balance is nil or absent; blocking whenever it is reported with an amount"
+  },
+  {
+   "rule": "SR-L1304-1",
+   "concept": "WhetherOtherIntangibleAssetsAreStatedAtRevaluedAmount",
+   "severity": "WARNING",
+   "whenNilOrAbsent": "OtherIntangibleAssets",
+   "evidence": "golden-ref-b-2024-25.xml (MCA-validated, FY 2024-25): other intangible assets reported as 0 for both years and no note; the revaluation flag is not reported",
+   "decision": "release owner, 2026-10-09 (v1.2): a warning only while the balance is nil or absent; blocking whenever it is reported with an amount"
+  },
+  {
+   "rule": "SR-L1678-1",
+   "concept": "OtherCurrentAssetsOthers",
+   "severity": "WARNING",
+   "whenNilOrAbsent": "OtherCurrentAssetsOthers",
+   "evidence": "golden-ref-c-standalone-2024-25.xml / golden-ref-c-consolidated-2024-25.xml (MCA-validated, FY 2024-25): the details table of other current assets, others reports amounts while the note figure OtherCurrentAssetsOthers is 0 (both years); accepted",
+   "decision": "release owner's v1.2 principle for SR-L1097-1 / SR-L1304-1 applied (v1.5): a warning only while the note figure is nil or 0; blocking whenever it is reported with an amount"
+  },
+  {
+   "rule": "SR-L1590-1",
+   "concept": "OtherNoncurrentAssetsOthers",
+   "severity": "WARNING",
+   "whenNilOrAbsent": "OtherNoncurrentAssetsOthers",
+   "evidence": "golden-ref-c-standalone-2024-25.xml / golden-ref-c-consolidated-2024-25.xml (MCA-validated, FY 2024-25): the details table of other non-current assets, others reports amounts while the note figure OtherNoncurrentAssetsOthers is 0 (both years); accepted",
+   "decision": "release owner's v1.2 principle for SR-L1097-1 / SR-L1304-1 applied (v1.5): a warning only while the note figure is nil or 0; blocking whenever it is reported with an amount"
+  },
+  {
+   "sharedName": "DisclosureOfDetailsOfSubsidiariesTable",
+   "severity": "ERROR",
+   "evidence": "MCA validator on a next-year consolidated filing (FY 2025-26): \"All mandatory elements for table DisclosureOfDetailsOfSubsidiariesTable must be present for atleast one context as on 2026-03-31\" — [611500] (all 19 ML-105 elements) and [613400] (all 7 ML-104 elements) were each complete, but under different members (One / Subsidiary1); no error for the previous year, for which [613400] is not reported. golden-ref-c-consolidated-2024-25.xml (MCA-validated) reports both tables under the same member.",
+   "decision": "release owner, 2026-10-15 (v1.5.5): blocking"
+  }
+ ]
+}
